@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Prediction</title>
+    </head>
+    <body>
+        <h2>House Prediction</h2>
+        <input type="number" id="sqft" placeholder="enter sqft">
+        <button onclick="getPrediction()">Predict</button>
+        <br>
+        <h3 id="result"></h3>
+    </body>
+    <script>
+        async function getPrediction() {
+            let sqft = document.getElementById("sqft").value;
+            let res = await fetch(`http://127.0.0.1:8000/predict/${sqft}`);
+            let data = await res.json()
+            document.getElementById("result").innerHTML = data.Predicted_Price
+        }
+    </script>
+</html>
