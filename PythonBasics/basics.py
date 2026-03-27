@@ -1,35 +1,20 @@
-# variables - store the data
-num1 = 200
-num2 = 100
-#print(num1)
-#print(num2)
-#print(num1+num2)
-#print(num1-num2)
+import numpy as np
+data = [10,10,10,10,10]
+mean = np.mean(data)
 
-price = 100.99
-temp = 98.3
-# print(price)
-# print(temp)
+std_dev = np.std(data)
 
-# print(type(num1))
-# print(type(temp))
+print(mean)
+print(np.var(data))
+print(std_dev)
 
-flag = True
-flag1 = False
-print(flag)
-print(type(flag1))
 
-name = "Python"
-print(name)
-print(type(name))
-print(name[0])
-print(name[0:3])
+# 10 - 30 = -20  400
+#         = -10  100
+#         =  0.  0
+#         = 10.  100
+#         = 20.  400
 
-numbers = [10,20,30,20]
-print(numbers)
-numbers.append(40)
-print(numbers)
-print(numbers[0])
+# 200. SQRT.  30.  14.14
+# 0
 
-l = range(1,5)
-print(list(l))
