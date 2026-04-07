@@ -1,0 +1,154 @@
+Python
+    Programming Language
+
+    Python used to build DataScience
+       ML
+       DL
+       NLP
+       GEN AI
+       AGENTIC AI
+       DJANGO
+       FAST API
+
+    Advanced Libraries
+
+    1) numpy
+            multi-dimensional arrays
+
+    2) pandas
+          tablur data
+          excel data
+          ---
+          ---
+          ---
+    3) matplotlib
+        visualization
+
+        pie-chart
+        line-chart
+        --
+        --
+        --
+
+Machine Learning
+
+    Learning from data
+
+    Hyd
+
+    500SQFT.     25lakh
+
+    1000SQGT.    50lakh
+
+    1500SQFT.    80lakh
+
+    2000SQFT      ?   (1cr - 1.2cr)
+
+DL (Deep Learning)
+    Complex Pattrens
+
+    Test. Show Image --- ? Cat
+
+
+NLP (Natural Language Processing)
+
+    understanging human languages
+
+    Neural Networks
+
+    ChatBot Appln --- Integarte to Frontend
+
+    VoiceBot Appln
+
+    CI/CD Pipeline
+
+Gen AI (Generative AI).        Chat GPT / Perplexity
+    Generates New Content
+    Ex.
+        Text
+        Code
+        audio
+        video
+        images
+        ---
+        ---
+        ---
+
+    End to End Project
+
+Deployment
+    GitHub Repo
+    GitHub Actions / GitHub Trigger
+    Jenkins
+    Docker
+    EC2 (Virtual Instance)
+
+    CI / CD Pipeline
+
+AGENTIC AI. (Agents)
+
+        Machine Learning
+        ****************
+         500SQFT.      10lakh
+         1000SQFT.     25lakh
+         1500SQFT.     60lakh
+         2000SQFT.      ?
+
+         ML --  1cr - 1.1cr
+
+         Deep Learning
+         *************
+         Images. (Complex Pattrens)
+
+         NLP (Natural Language Processing)
+         *********************************
+         Human Languages
+                    Alexa
+                    ChatBot
+                    VoiceBot
+        
+        Gen AI
+        ******
+            New Content
+                Text
+                Code
+                Images
+                Audio
+                Video
+
+        Agentic AI
+        **********
+            Goal --> Step1.  Step2.  Step3,.....Step4 ---> Execute
+
+            Tomarrow we have a class
+                Schedule Meeting
+                Send Email
+                Reminder
+                Summary
+
+Python Software
+
+VSCode (Visual Studio Code)
+
+numpy (numerical python)
+************************
+    fast
+    more efficient
+    eazy for maths
+
+//download
+> pip install numpy
+
+//import
+import numpy as np
+
+matplotlib
+**********
+  Line graph
+  Bar chart
+  Pie chart
+  Scatter plot
+
+  pip install matplotlib
+
+  matplotlib.__version__
