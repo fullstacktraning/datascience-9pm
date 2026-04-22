@@ -77,4 +77,203 @@ pip install -r requirements.txt
         Epochs 3:    95%      5%
             weight : 13
 
+*******************************************************************************************
+cnn-pneoumnia-appln
+         requirements.txt
+                tensorflow                # deep learning library
+                opencv-python             # convert inage ro vectors
+                fastapi                   # to develop api calls
+                uvicorn                   # run fastapi
+                pillow                    # modify format, mobify the size
+                python-multipart          # upload the data
+
+          main.py (library/model code)  python main.py
+
+          pneumonia_model.keras (will create automatically, if we train model)
+
+          utils.py  (prediction-code) Ex. predict(img) (post req)
+
+          app.py (Fast API)
+              @post
+
+          Dockerfile
+
+          Jenkinsfile
+            (CI/CD PIPELINE)
+*********************************************************************************************
+
+1) step 1.
+      push code to GitHub
+            https://github.com/fullstacktraning/deep-learning-appln.git
+
+2) create EC2 instance
+      instance-name : pneoumnia-appln
+      size : t3-large
+      hard-disk : 50GB
+
+      Assign Elastic IP Address :  Ex. 13.48.94.166
+
+3) open the below ports (inbound rules)
+        80 (Docker) HTTP
+        8080  Jenkins
+        8000  uvicorn
+        3000  reactJS
+
+4) update ubuntu
+      > sudo apt update -y
+
+5) install JDK (Jenkins installation depending on JDK)
+          https://www.jenkins.io/doc/book/installing/linux/
+
+          sudo apt update
+          sudo apt install fontconfig openjdk-21-jre
+          java -version
+
+6) install Jenkins
+
+      sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install jenkins
+
+7) install docker
+      > sudo apt update -y
+      > sudo apt install docker.io -y
+
+8) enable global permissions
+      > sudo usermod -aG docker ubuntu
+      > sudo usermod -aG jenkins ubuntu
+      > sudo usermod -aG docker jenkins
+
+9) restart jenkins & docker
+      > sudo systemctl restart jenkins
+      > sudo systemctl restart docker
+
+10) know the jenkins password
+      sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+11) install suggested plugins in Jenkins (http://EC2_IP:8080/)
+
+12) install below plugins
+      -> Docker
+      -> Docker Pipeline
+      -> Git Server
+
+13) Create and Build Pipeline
+
+14) Test the Application
+
+-----------------------------------------------
+http://13.48.94.166:8000/predict  (POST)
+
+1) create react appln
+      > npm create vite@latest
+
+2) integrate "fastapi" to "react appln"
+
+App.js
+******
+import React, { useState } from "react";
+
+function App() {
+  const [file, setFile] = useState(null);
+  const [result, setResult] = useState(null);
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select a file");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://51.20.65.174:8000/predict", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      console.error(error);
+      alert("Error connecting to server");
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Pneumonia Detection</h1>
+
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+
+      <br /><br />
+
+      <button onClick={handleUpload}>Predict</button>
+
+      <br /><br />
+
+      {result && (
+        <div>
+          <h3>Result: {result.result.label}</h3>
+          <p>Confidence: {result.result.confidence}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
+
+3) run react appln
+      > npm run dev
+
+4) build the react application
+
+      > npm run build
+            Ex.
+                  dist
+
+5) push "dist" folder to EC2
+      chmod 400 ~/Downloads/deeplearning.pem
+      scp -i ~/Downloads/deeplearning.pem -r dist ubuntu@13.48.94.166:~
+
+6) run application in EC2
+       
+        npx serve -s dist -l tcp://0.0.0.0:3000
+        sudo npm install -g serve
+
+        serve -s dist -l 3000
+
+        http://13.48.94.166:3000
+
+
+
+
+
+             
+
+
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -9,3 +9,4 @@ flask
 pillow
 fastapi
 uvicorn
+python-multipart

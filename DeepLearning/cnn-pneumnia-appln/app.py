@@ -1,49 +1,46 @@
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from utils import predict
+import shutil
 import os
-import numpy as np
-from flask import Flask, request, render_template
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
+import uuid
 
-app = Flask(__name__)
+# initilizing Fast API
+app = FastAPI()
 
-# 📁 Load model
-model = load_model("pneumonia_model.h5")
+# connect to all other tech Ex. React,Angular,HTML, JS, Spring Boot
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],          # Allowed origins, React,Angular, SpringBoot, .....
+    allow_credentials=True,
+    allow_methods=["*"],          # GET, POST, PUT, DELETE, ......
+    allow_headers=["*"],          # All headers
+)
 
-UPLOAD_FOLDER = "static/uploads"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# read image from UI ---> save temp ---> prediction(utils.py) ---> delete temp img ---> return result
 
-IMG_SIZE = 150
+@app.get("/")
+def home():
+    return {"message": "Pneumonia Detection API is Running 🚀"}
 
-# 🏠 Home page
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.post("/predict")
+async def predict_api(file: UploadFile = File(...)):
+    
+    # Unique temp file
+    file_location = f"temp_{uuid.uuid4().hex}.jpg"
+    
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
-# 🔍 Prediction route
-@app.route('/predict', methods=['POST'])
-def predict():
-    if 'file' not in request.files:
-        return "No file uploaded"
+    try:
+        result = predict(file_location)
+    except Exception as e:
+        return {"error": str(e)}
+    finally:
+        if os.path.exists(file_location):
+            os.remove(file_location)
 
-    file = request.files['file']
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
-
-    # 🧠 Preprocess image
-    img = image.load_img(filepath, target_size=(IMG_SIZE, IMG_SIZE))
-    img_array = image.img_to_array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-
-    # 🔮 Prediction
-    prediction = model.predict(img_array)[0][0]
-
-    if prediction > 0.5:
-        result = "🦠 Pneumonia Detected"
-    else:
-        result = "✅ Normal"
-
-    return render_template('index.html', prediction=result, img_path=filepath)
-
-# 🚀 Run app
-if __name__ == '__main__':
-    app.run(debug=True)
+    return {
+        "filename": file.filename,
+        "result": result
+    }

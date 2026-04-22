@@ -1,30 +1,11 @@
 # tensorflow - used to build deep learning application
 import tensorflow as tf
-
-# ImageDataGenerator is the predefined class
-# ImageDataGenerator, used to implement the augumentation
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-# these classes helps to create hidden layers while building model
 from tensorflow.keras import layers, models
-
-# MobileNetV2 is the trained model
-# 94.4%
-# USA - Hospital
-# Edges, Curves, Textures, Objects
 from tensorflow.keras.applications import MobileNetV2
-
-# EarlyStopping - used to stop the training, if no improvement detected
-# ReduceLROnPlateau, used for microlevel management, to monitor accuracy
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-
-# class_weight, used to balance the weights between normal and pneoumia data
 from sklearn.utils.class_weight import compute_class_weight
-
-# numpy - used to perform matrix operations
 import numpy as np
-
-# plot the graphs
 import matplotlib.pyplot as plt
 
 # 📁 Paths
@@ -34,7 +15,6 @@ test_dir = "data/chest_xray/test"
 
 IMG_SIZE = 224
 BATCH_SIZE = 32 
-   
 
 # 🔄 Data Generators
 train_datagen = ImageDataGenerator(
@@ -48,7 +28,6 @@ train_datagen = ImageDataGenerator(
 )
 
 val_test_datagen = ImageDataGenerator(rescale=1./255)
-
 
 train_data = train_datagen.flow_from_directory(
     train_dir,
@@ -72,9 +51,7 @@ test_data = val_test_datagen.flow_from_directory(
     shuffle=False
 )
 
-# AUGUMENTATION COMPLETED SUCCESSFULLY #
-
-# ⚖️ CLASS WEIGHTS (VERY IMPORTANT)
+# ⚖️ CLASS WEIGHTS
 class_weights = compute_class_weight(
     class_weight='balanced',                               
     classes=np.unique(train_data.classes),                   
@@ -83,9 +60,6 @@ class_weights = compute_class_weight(
 class_weights = dict(enumerate(class_weights))              
 print("Class Weights:", class_weights)
 
-# CLASS WEIGHTS EXPALNATION DONE #
-
-
 # 🧠 Base Model
 base_model = MobileNetV2(
     input_shape=(IMG_SIZE, IMG_SIZE, 3),
@@ -93,8 +67,7 @@ base_model = MobileNetV2(
     weights='imagenet'
 )
 
-
-# Freeze most layers
+# Freeze layers
 for layer in base_model.layers[:-20]:
     layer.trainable = False
 
@@ -109,10 +82,9 @@ model = models.Sequential([
     layers.Dense(128, activation='relu'),
     layers.Dropout(0.6),
     layers.Dense(1, activation='sigmoid')
-]) 
+])
 
-
-# ⚙️ Compile (LOW LR)
+# ⚙️ Compile
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
 
 model.compile(
@@ -146,7 +118,7 @@ history = model.fit(
     callbacks=[early_stop, reduce_lr]
 )
 
-# 📊 Plot Accuracy
+# 📊 Accuracy Graph
 plt.figure()
 plt.plot(history.history['accuracy'], label='Train Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
@@ -154,7 +126,7 @@ plt.legend()
 plt.title("Accuracy")
 plt.show()
 
-# 📊 Plot Loss
+# 📊 Loss Graph
 plt.figure()
 plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
@@ -167,22 +139,5 @@ test_loss, test_acc = model.evaluate(test_data)
 print("✅ Final Test Accuracy:", test_acc)
 
 # 💾 Save Model
-model.save("pneumonia_model.h5") 
-
-# 🔮 Prediction Function
-from tensorflow.keras.preprocessing import image
-
-def predict_image(img_path):
-    img = image.load_img(img_path, target_size=(IMG_SIZE, IMG_SIZE))
-    img_array = image.img_to_array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-
-    prediction = model.predict(img_array)
-
-    if prediction[0][0] > 0.5:
-        print("🦠 Pneumonia Detected")
-    else:
-        print("✅ Normal")
-
-
-predict_image("data/chest_xray/test/PNEUMONIA/person1_virus_6.jpeg")
+model.save("pneumonia_model.keras") 
+print("✅ Model saved successfully!")
